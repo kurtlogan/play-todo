@@ -1,7 +1,7 @@
 package controllers
 
+import forms.TodoFormProvider
 import javax.inject._
-
 import play.api.mvc._
 
 /**
@@ -9,8 +9,10 @@ import play.api.mvc._
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents) (implicit assetsFinder: AssetsFinder)
+class HomeController @Inject()(cc: ControllerComponents, formProvider: TodoFormProvider)(implicit assetsFinder: AssetsFinder)
   extends AbstractController(cc) {
+
+  val form = formProvider()
 
   /**
    * Create an Action to render an HTML page with a welcome message.

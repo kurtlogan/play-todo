@@ -19,6 +19,8 @@ class HomeController @Inject()(cc: ControllerComponents) (implicit assetsFinder:
    * a path of `/`.
    */
   def index = Action {
+    controllers.routes.HomeController.index()
+
     Ok(views.html.index("Your new application is ready."))
   }
 

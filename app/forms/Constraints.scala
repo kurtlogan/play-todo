@@ -19,6 +19,6 @@ trait Constraints {
   val isAlphaNumeric: Constraint[String] =
     Constraint { s =>
       if (s.matches("^[a-zA-Z0-9]*$")) Valid
-      else Invalid("error-non-alpha-numeric")
+      else Invalid("error.non-alpha-numeric")
     }
 }

@@ -2,12 +2,18 @@ package forms
 
 import java.time.{LocalDate, Month}
 
-import models.{NonEmptyString, Open, Todo}
+import generators.Generators
+import models.{Open, Todo}
+import org.scalacheck.Arbitrary._
+import org.scalatest.prop.PropertyChecks
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.Form
 import services.DateService
 
-class TodoFormProviderSpec extends WordSpec with MustMatchers {
+class TodoFormProviderSpec extends WordSpec
+  with MustMatchers
+  with PropertyChecks
+  with Generators {
 
   class FakeDateService(override val now: LocalDate) extends DateService
 
@@ -24,10 +30,18 @@ class TodoFormProviderSpec extends WordSpec with MustMatchers {
 
       "valid values are bound" in {
 
-        form()().bind(Map("name" -> "foo", "description" -> "")).fold(
-          _ => fail("form should not fail"),
-          todo => Some(todo) mustBe NonEmptyString("foo").map(Todo(_, "", now, Open))
-        )
+        forAll { todo: Todo =>
+
+          form()().fillAndValidate(todo).fold(
+            _ => fail("form should not fail"),
+            t => {
+              t.name mustBe todo.name
+              t.description mustBe todo.description
+              t.createdOn mustBe todo.createdOn
+              t.state mustBe todo.state
+            }
+          )
+        }
       }
     }
 
@@ -35,18 +49,21 @@ class TodoFormProviderSpec extends WordSpec with MustMatchers {
 
       "description is longer than 512 characters" in {
 
-        form()().bind(Map("name" -> "foo", "description" -> "a" * 513)).fold(
-          error(_, "description") mustBe Some("error.too-long"),
-          _ => fail("form should fail")
-        )
-      }
+        val badDataGen =
+          for {
+            todo <- arbitrary[Todo]
+            desc <- minStringSize(513)
+          } yield {
+            todo.copy(description = desc)
+          }
 
-      "description contains non alpha numeric characters" in {
+        forAll(badDataGen) { badData =>
 
-        form()().bind(Map("name" -> "foo", "description" -> "?")).fold(
-          error(_, "description") mustBe Some("error.non-alpha-numeric"),
-          _ => fail("form should fail")
-        )
+          form()().fillAndValidate(badData).fold(
+            error(_, "description") mustBe Some("error.too-long"),
+            _ => fail("form should fail")
+          )
+        }
       }
     }
   }

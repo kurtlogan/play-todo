@@ -1,11 +1,17 @@
 package forms
 
+import generators.Generators
 import models.NonEmptyString
+import org.scalatest.prop.PropertyChecks
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.data.Forms.{of=>fof, _}
+import play.api.data.Forms.{of => fof, _}
 import play.api.data.Form
 
-class FormattersSpec extends WordSpec with MustMatchers with Formatters {
+class FormattersSpec extends WordSpec
+  with MustMatchers
+  with Formatters
+  with PropertyChecks
+  with Generators {
 
   case class Wrapper(value: NonEmptyString)
 
@@ -20,10 +26,12 @@ class FormattersSpec extends WordSpec with MustMatchers with Formatters {
 
       "valid values are bound" in {
 
-        testForm.bind(Map("prop" -> "abc")).fold(
-          _ => fail("form should succeed"),
-          _.value.value mustBe "abc"
-        )
+        forAll { nes: NonEmptyString =>
+          testForm.fillAndValidate(Wrapper(nes)).fold(
+            _ => fail("form should succeed"),
+            _.value mustBe nes
+          )
+        }
       }
     }
 

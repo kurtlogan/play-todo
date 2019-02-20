@@ -6,12 +6,12 @@ import play.api.data.Forms._
 import play.api.data.Form
 
 @Singleton
-class TodoFormProvider @Inject()() extends Formatters {
+class TodoFormProvider @Inject()() extends Formatters with Constraints {
 
   def apply(): Form[Todo] = Form(
     mapping(
       "name" -> of[NonEmptyString],
-      "description" -> text,
+      "description" -> text.verifying(maxSize(512)),
       "state" -> ignored[TodoState](Open)
     )(Todo.apply)(Todo.unapply)
   )

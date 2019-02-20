@@ -1,1 +1,2 @@
 error.nonemptystring.empty=Should not be empty
+error.string.too-long=Too long

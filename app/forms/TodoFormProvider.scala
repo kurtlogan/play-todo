@@ -1,6 +1,7 @@
 package forms
 
 import java.time.LocalDate
+import java.util.UUID
 
 import com.google.inject.{Inject, Singleton}
 import models.{NonEmptyString, Open, Todo, TodoState}
@@ -13,6 +14,7 @@ class TodoFormProvider @Inject()(date: DateService) extends Formatters with Cons
 
   def apply(): Form[Todo] = Form(
       mapping(
+        "id"        -> ignored[UUID](UUID.randomUUID()),
       "name"        -> of[NonEmptyString],
       "description" -> text.verifying(maxSize(512)),
       "createdOn"   -> ignored[LocalDate](date.now),

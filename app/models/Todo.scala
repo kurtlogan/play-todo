@@ -1,6 +1,7 @@
 package models
 
 import java.time.LocalDate
+import java.util.UUID
 
 abstract case class NonEmptyString(value: String)
 
@@ -12,6 +13,7 @@ object NonEmptyString {
 }
 
 case class Todo(
+  id: UUID,
   name: NonEmptyString,
   description: String,
   createdOn: LocalDate,

@@ -1,6 +1,7 @@
 package models
 
 import java.time.LocalDate
+import java.util.UUID
 
 sealed abstract case class NonEmptyString(value: String)
 
@@ -11,7 +12,11 @@ object NonEmptyString {
     else None
 }
 
-case class Todo(name: NonEmptyString, description: String, state: TodoState)
+case class Todo(
+                 id: UUID,
+                 name: NonEmptyString,
+                 description: String,
+                 state: TodoState)
 
 
 sealed trait TodoState

@@ -3,13 +3,21 @@
 
 @(todo: Todo)
 
-<div>
-    <div>@todo.name</div>
-    <div>@todo.description</div>
-    <div>@{
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+    <td>@todo.name</td>
+    <td>@todo.description</td>
+    <td>@{
         todo.state match {
             case Completed(_) => "Completed"
-            case _            => ""
+            case _            =>
+                Html(s"<a href='${routes.HomeController.complete(todo.id)}'>mark as complete</a>")
         }
-    }</div>
-</div>
+    }</td>
+    </tr>
+</table>

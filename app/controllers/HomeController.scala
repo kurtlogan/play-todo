@@ -25,7 +25,7 @@ class HomeController @Inject()(
                               )
   extends BaseController(cc) {
 
-  val form = formProvider()
+  def form = formProvider()
 
   def display: Action[AnyContent] = Action.async { implicit request =>
     repo.getAll.map { all =>
@@ -43,16 +43,16 @@ class HomeController @Inject()(
 
     form.bindFromRequest().fold(
       errors =>
-        Future.successful(BadRequest(errors.errors.map(_.message).mkString("\n"))),
+        Future.successful(BadRequest(createView(errors))),
       todo   =>
-        repo.insert(todo).map(_ => Ok("Todo created"))
+        repo.insert(todo).map(_ => Redirect(routes.HomeController.display()))
     )
   }
 
   def complete(id: UUID): Action[AnyContent] = Action.async {
 
     repo.modify(id, _.copy(state = Completed(java.time.LocalDate.now()))).map {
-      case Some(_) => Ok(s"Todo $id has been set to complete")
+      case Some(_) => Redirect(routes.HomeController.display())
       case None    => BadRequest("Something has gone wrong")
     }
   }

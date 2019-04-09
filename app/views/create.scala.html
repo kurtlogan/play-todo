@@ -1,11 +1,25 @@
 
+@import views.html.helper.form
+@import views.html.helper.CSRF
+
 @this()
-@(form: Form[Todo])(implicit messages: Messages)
+@(todo: Form[Todo])(implicit request: Request[_], messages: Messages)
 
-<form action="@controllers.routes.HomeController.create()" method="post">
+<div>
+@form(controllers.routes.HomeController.create()) {
 
-    <input type="text" id="name" value="@form("name").value"/>
-    <input type="text" id="description" value="@form("description").value"/>
+    @CSRF.formField
 
-    <input type="submit" value="Create" />
-</form>
+    <div>
+        @components.input_text(todo("name"))
+        @components.input_text(todo("description"))
+    </div>
+
+    <div>
+        <input type="submit" value="Create" />
+    </div>
+}
+
+<a href="@routes.HomeController.display().url">View todos</a>
+
+</div>

@@ -1,0 +1,12 @@
+
+@(field: Field)(implicit messages: Messages)
+
+<div>
+@if(field.hasErrors) {
+    @field.errors.map(e =>
+        <div>{messages(e.message)}</div>
+    )
+}
+
+<input type="text" id="@field.name" name="@field.name" value="@field.value"/>
+</div>

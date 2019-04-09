@@ -4,6 +4,14 @@
 
 <h1>@messages("display.title")</h1>
 
-<div>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Status</th>
+    </tr>
+
     @todos.map(t => singleTodo(t))
-</div>
+</table>
+
+<a href="@routes.HomeController.create().url">Create todo</a>

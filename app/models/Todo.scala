@@ -3,7 +3,9 @@ package models
 import java.time.LocalDate
 import java.util.UUID
 
-sealed abstract case class NonEmptyString(value: String)
+sealed abstract case class NonEmptyString(value: String) {
+  override def toString: String = value
+}
 
 object NonEmptyString {
 

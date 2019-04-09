@@ -4,6 +4,10 @@
 
 # An example controller showing a sample home page
 GET     /display                    controllers.HomeController.display
+
+GET     /create                     controllers.HomeController.createV
+
++nocsrf
 POST    /create                     controllers.HomeController.create
 GET     /complete/:id               controllers.HomeController.complete(id: java.util.UUID)
 

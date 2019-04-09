@@ -7,8 +7,9 @@ import javax.inject._
 import models.{Completed, Todo}
 import play.api.mvc._
 import repositories.TodoRepository
+import views.html.main
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -18,7 +19,9 @@ import scala.concurrent.Future
 class HomeController @Inject()(
                                 cc: ControllerComponents,
                                 formProvider: TodoFormProvider,
-                                repo: TodoRepository
+                                repo: TodoRepository,
+                                displayView: views.html.display,
+                                createView: views.html.create
                               )
   extends BaseController(cc) {
 
@@ -26,15 +29,21 @@ class HomeController @Inject()(
 
   def display: Action[AnyContent] = Action.async { implicit request =>
     repo.getAll.map { all =>
+      println(all)
 
-      Ok(all.mkString("\n"))
+      Ok(displayView(all))
     }
+  }
+
+  def createV = Action { implicit request =>
+    Ok(createView(form))
   }
 
   def create: Action[AnyContent] = Action.async { implicit request =>
 
     form.bindFromRequest().fold(
-      errors => Future.successful(BadRequest(errors.errors.map(_.message).mkString("\n"))),
+      errors =>
+        Future.successful(BadRequest(errors.errors.map(_.message).mkString("\n"))),
       todo   =>
         repo.insert(todo).map(_ => Ok("Todo created"))
     )

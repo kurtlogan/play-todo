@@ -1,0 +1,9 @@
+
+@this()
+@(todos: List[Todo])(implicit messages: Messages)
+
+<h1>@messages("display.title")</h1>
+
+<div>
+    @todos.map(t => singleTodo(t))
+</div>

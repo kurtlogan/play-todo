@@ -1,0 +1,15 @@
+
+@import models.Todo
+
+@(todo: Todo)
+
+<div>
+    <div>@todo.name</div>
+    <div>@todo.description</div>
+    <div>@{
+        todo.state match {
+            case Completed(_) => "Completed"
+            case _            => ""
+        }
+    }</div>
+</div>

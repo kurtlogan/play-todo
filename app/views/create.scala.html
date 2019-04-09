@@ -1,0 +1,11 @@
+
+@this()
+@(form: Form[Todo])(implicit messages: Messages)
+
+<form action="@controllers.routes.HomeController.create()" method="post">
+
+    <input type="text" id="name" value="@form("name").value"/>
+    <input type="text" id="description" value="@form("description").value"/>
+
+    <input type="submit" value="Create" />
+</form>
